@@ -2,55 +2,164 @@
  * LinkedList for JavaScript.
  * Eventually this will completely emulate a regular Java linked list.
  * Copyright 2013, Brian Milton
- * 
+ * Version: 0.37.2 (18th July 2013)
  */
-function LinkedList() {
-	this._length = 0;
-	this._head = null;
-	this._last = null;
-};
-
-LinkedList.prototype = {
+(function() {
+	
+	var MODCOUNT = 0;  // Number of times list has been strcurally modified.
+	
+	function LinkedList() {
+		this._length = 0;
+		this._head = null;
+		this._last = null;
+	}
 	
 	/*
-	 * Appends a new node to the end of the list.
-	 * @return {null}
+	 * Adds the specified element to the end of the list.
+	 * Adds the specified element at the specified position in the list. Does not replace the element.
+	 * @return {bool}
 	 */
-	append : function(data) {
-
-		// Create a new node.
-		var node = {
-				data : data,
-				next : null
-			},
-
-			// Used to traverse the structure
-			current;
-
-		// Special case: No items in list.
-		if (this._head === null) {
+	LinkedList.prototype.add = function(index,element) {
+		
+		if(element) {
+			// There is an index and an element. Insert at specified index.
+			var node = {
+					data : element,
+					next : null
+				};
+			var current = this._head;
+			var i = 0;
+			var previous;
 			
-			this._head = node;
-			this._last = node;
+			// Check for out of bounds.
+			if(index > -1 && index < this._length) {
+				while (i++ < index) {
+					previous = current;
+					current = current.next;
+				}
+				// Index reached insert the new node here.
+				node.next = current;
+				previous.next = node;
+			} else {
+				// Index out of bounds.
+				return false;
+			}
+			
+			MODCOUNT++;
+			
+			return true;
 			
 		} else {
+			var node = {
+					data : index,
+					next : null
+				};
+			var current;
+	
+			// Special case: No items in list.
+			if (this._head === null) {
+				
+				this._head = node;
+				this._last = node;
+				
+			} else {
+				
+				// Add as the last item in the list.
+				current = this._last;
+				current.next = node;
+				this._last = node;
+				
+			}
+	
+			// Update the count.
+			this._length++;
 			
-			// Add as the last item in the list.
-			current = this._last;
-			current.next = node;
-			this._last = node;
+			MODCOUNT++;
 			
+			return true;
 		}
-
-		// Update the count.
-		this._length++;
-	},
-
+		
+		return false;
+		
+	};
+	
 	/*
-	 * Returns the data of a node at the specified zero-based index.
-	 * @return {*}
+	 * Inserts the specified element at the beginning of the list.
+	 * @return {bool}
 	 */
-	item : function(index) {
+	LinkedList.prototype.addFirst = function(data) {
+		var node = {
+				data: data,
+				next: this._head
+			}
+			
+			// Set node at the head.
+			this._head = node;
+			this._length++;
+			MODCOUNT++;
+			return true;
+	};
+	
+	/*
+	 * Appends the specified element to the end of the list.
+	 * @return {bool}
+	 */
+	LinkedList.prototype.addLast = function(data) {
+		return this.add(data);
+	};
+	
+	/*
+	 * Removes all of the elements from the list.
+	 * @return {void}
+	 */
+	LinkedList.prototype.clear = function() {
+		var head = this._head;
+		var tail = this._last;
+		current.data = null;
+		current.next = null;
+		tail.data = null;
+		this._length = 0;
+		MODCOUNT++;
+	};
+	
+	/*
+	 * Returns a shallow copy of the list.
+	 * @return {object}
+	 */
+	LinkedList.prototype.clone = function() {
+		// Doesn't clone functionality, but copies everything else pretty quickly.
+		return JSON.parse(JSON.stringify(this));
+	};
+	
+	/*
+	 * Returns true if the list contains the specified object.
+	 * @return {bool}
+	 */
+	LinkedList.prototype.contains = function(data) {
+		var current = this._head;
+		while(current !== null) {
+			if(current.data === data) {
+				return true;
+			}
+			current = current.next;
+		}
+		
+		return false;
+	};
+	
+	/*
+	 * Returns, but does not remove, the head (first element) of this list.
+	 * @return {element}
+	 */
+	LinkedList.prototype.element = function() {
+		return this._head.data;
+	};
+	
+	/*
+	 * Returns the element at the specified index.
+	 * @return {element}
+	 */
+	LinkedList.prototype.get = function(index) {
 
 		// Check for out-of-bounds
 		if (index > -1 && index < this._length) {
@@ -69,14 +178,175 @@ LinkedList.prototype = {
 			// Index out of bounds.
 			return null;
 		}
-	},
-
+	};
+	
 	/*
-	 * Removes a node at the specified zero-based index.
-	 * @return {null}
+	 * Returns the first element in the list.
+	 * @return {element}
 	 */
-	remove : function(index) {
-
+	LinkedList.prototype.getFirst = function() {
+		return this._head.data;
+	};
+	
+	/*
+	 * Returns the last element in the list.
+	 * @return {element}
+	 */
+	LinkedList.prototype.getLast = function() {
+		return this._last.data;
+	};
+	
+	/*
+	 * Returns the index of the first occurrence of the specified object in the list, or -1 if the list doesn't contain the object.
+	 * @return {element}
+	 */
+	LinkedList.prototype.indexOf = function(data) {
+		var current = this._head;
+		var index = 0;
+		
+		while(current !== null) {
+			if (current.data === data) {
+				return index;
+			}
+			current = current.next;
+			index++;
+		}
+		return -1;
+	};
+	
+	/*
+	 * Adds the specified element to the list one position after the specified index.
+	 * @return {bool}
+	 */
+	LinkedList.prototype.insertAfter = function(index, data) {
+		return this.add(index+1,data);
+	};
+	
+	/*
+	 * Adds the specified element to the list one position before the specified index.
+	 * @return {bool}
+	 */
+	LinkedList.prototype.insertBefore = function(index, data) {
+		return this.add(index-1,data);
+	};
+	
+	/*
+	 * Returns the index of the last occurance of the specified object in the list, or -1 if this list does not contain the object.
+	 * @return {element}
+	 */
+	LinkedList.prototype.lastIndexOf = function(data) {
+		var current = this._head;
+		var lastIndex = currentIndex = -1;
+		
+		while(current !== null) {
+			currentIndex++;
+			if (current.data === data) {
+				lastIndex = currentIndex;
+			}
+			current = current.next;
+		}
+		return lastIndex;
+	};
+	
+	/*
+	 * Adds the specified element as the tail (last element) of the list.
+	 * @return {bool}
+	 */
+	LinkedList.prototype.offer = function(data) {
+		return this.add(data);
+	};
+	
+	/*
+	 * Adds the specified element at the front of the list.
+	 * @return {bool}
+	 */
+	LinkedList.prototype.offerFirst = function(data) {
+		return this.addFirst(data);
+	};
+	
+	/*
+	 * Adds the specified elements at the end of the list.
+	 * @return {bool}
+	 */
+	LinkedList.prototype.offerLast = function(data) {
+		return this.add(data);
+	};
+	
+	/*
+	 * Retrieves, but does not remove, the head (first element) of the list.
+	 * @return {element}
+	 */
+	LinkedList.prototype.peek = function() {
+		return this._head.data;
+	};
+	
+	/*
+	 * Retrieves, but does not remove, the first element of the list, or returns null if the list is empty.
+	 * @return {element}
+	 */
+	LinkedList.prototype.peekFirst = function() {
+		return this._head.data;
+	};
+	
+	/*
+	 * Retrieves, but does not remove, the last element of the list, or returns null if the list is empty.
+	 * @return {element}
+	 */
+	LinkedList.prototype.peekLast = function() {
+		return this._last.data;
+	};
+	
+	/*
+	 * Retrieves and removes the head (first element) of the list.
+	 * @return {element}
+	 */
+	LinkedList.prototype.poll = function() {
+		return this.removeFirst();
+	};
+	
+	/*
+	 * Retrieves and removes the head (first element) of the list.
+	 * @return {element}
+	 */
+	LinkedList.prototype.pollFirst = function() {
+		return this.removeFirst();
+	};
+	
+	/*
+	 * Retrieves and removes the last element of the list, or returns null if the list is empty.
+	 * @return {element}
+	 */
+	LinkedList.prototype.pollLast = function() {
+		return this.removeLast();
+	};
+	
+	/*
+	 * Pops an element from the stack represented by this list.
+	 * IMPORTANT: LinkedLists are LIFO
+	 * @return {element}
+	 */
+	LinkedList.prototype.pop = function() {
+		return this.removeFirst();
+	};
+	
+	/*
+	 * Pushes an element onto the stack represented by the list.
+	 * IMPORTANT: LinkedLists are LIFO
+	 * @return {bool}
+	 */
+	LinkedList.prototype.push = function(data) {
+		return this.addFirst(data);
+	};
+	
+	/*
+	 * Retrieves and removes the head (first element) of the list.
+	 * Retrieves and removes the element at the specified index.
+	 * @return {element}
+	 */
+	LinkedList.prototype.remove = function(index) {
+		
+		if(!index) index = 0;
+		
 		// Check for out-of-bounds values
 		if (index > -1 && index < this._length) {
 			var current = this._head, previous, i = 0;
@@ -106,71 +376,116 @@ LinkedList.prototype = {
 
 			// Decrement the length
 			this._length--;
+			
+			MODCOUNT++;
 
 			// Return the value
 			return current.data;
 			
 		} else {
-			
 			// Index out of bounds.
 			return null;
 		}
-	},
+	};
 	
 	/*
-	 * Inserts a new node at the beginning of the list.
-	 * @return {null}
+	 * Retrieves and removes the first element from the list.
+	 * @return {element}
 	 */
-	insertAsFirst : function(data) {
-		var node = {
-				data: data,
-				next: this._head
-			}
-			
-			// Set node at the head.
-			this._head = node;
-			this._length++;
-	},
-	
-	/*
-	 * Inserts a new node after matching an item passed.
-	 * @return {null}
-	 */
-	insertAfter : function(item, data) {
+	LinkedList.prototype.removeFirst = function() {
 		var current = this._head;
-		
-		// Itterate through the list.
-		while (current !== null) {
-			
-			// When a matching item is found...
-			if(current.data === item) {
-				var node = {data:data,next:current.next};
-				
-				// See if it's at the end...
-				if(current.next === null) this.add(data);
-				
-				// Set the matched node to point to this node next. 
-				current.next = node;
-				
-				// Increment the length.
-				this._length++;
-				
-				return;
-			}
-			
+		var nextNode = current.next;
+		this._head = nextNode;
+		this._length--;
+		MODCOUNT++;
+		return current.data;
+	};
+	
+	/*
+	 * Removes the first occurance of the specified object in the list (when traversing from head to tail).
+	 * @return {bool}
+	 */
+	LinkedList.prototype.removeFirstOccurrence = function(data) {
+		if (this.remove(this.indexOf(data))) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+	
+	/*
+	 * Removes and returns the last element in the list.
+	 * @return {element}
+	 */
+	LinkedList.prototype.removeLast = function() {
+		var current = this._head;
+		while(current.next !==null ) {
+			previous = current;
 			current = current.next;
 		}
-	},
+		// Last reached.
+		previous.next = null;
+		this._last = previous;
+		this._length--;
+		MODCOUNT++;
+		return current.data;
+	};
+	
+	/*
+	 * Removes the last occurance of the specified object in the list (when traversing from head to tail).
+	 * @return {bool}
+	 */
+	LinkedList.prototype.removeLastOccurrence = function(data) {
+		if (this.remove(this.lastIndexOf(data))) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+	
+	/*
+	 * Replaces the element at the specified position in the list with the specified element.
+	 * Returns the element previously at the specified position.
+	 * @return {bool}
+	 */
+	LinkedList.prototype.set = function(index,data) {
+		var node = {
+				data: data,
+				next: null
+		};
+		var current = this._head;
+		var previous;
+		var i = 0;
+		while(i++ < index) {
+			previous = current;
+			current = current.next;
+		}
+		// At the index specified.
+		node.next = current.next;
+		previous.next = node;
+		MODCOUNT++;
+		return current.data;
+		
+	};
+	
+	/*
+	 * Removes and returns the last element in the list.
+	 * @return {integer}
+	 */
+	LinkedList.prototype.size = function() {
+		return this._length;
+	};
 	
 	/*
 	 * Sorts the list according to a function passed.
-	 * @return {null}
+	 * @return {boolean}
 	 */
-	sort : function(sortFunction) {
+	LinkedList.prototype.sort = function(sortFunction) {
 		// Return immediately if the list is empty.
 		if(this._length === 0) {
-			return;
+			return false;
 		} else {
+			//var numops = 0;
 			var sortDone = false;
 			// While the sort is not complete...
 			while(!sortDone) {
@@ -193,6 +508,8 @@ LinkedList.prototype = {
 							current.data = nextNode.data;
 							// Store the old current data in the nextNode.
 							nextNode.data = sortTemp;
+							//numops++;
+							//console.log(this.toString());
 						}
 					}
 					// Move up the list.
@@ -201,14 +518,33 @@ LinkedList.prototype = {
 				// End of the list reached.
 				current = this._last;
 			}
+			//console.log("Done in "+numops+" operations");
+			MODCOUNT++;
+			return true;
 		}
-	},
+	};
+	
+	/*
+	 * Returns an array containing all of the elements in the list in proper sequence (from head to tail).
+	 * @returns {object}
+	 */
+	LinkedList.prototype.toArray = function() {
+		var arr = [];
+		var current = this._head;
+		
+		while(current !== null) {
+			arr.push(current.data);
+			current = current.next;
+		}
+		
+		return arr;
+	};
 	
 	/*
 	 * Returns a string representation of the list with HTML formatting.
 	 * @returns {string} All items in the list.
 	 */
-	toString: function() {
+	LinkedList.prototype.toString = function() {
 		// Returns a string with HTML formatting.
 		var str = "";
 		if(this._length === 0) {
@@ -217,11 +553,11 @@ LinkedList.prototype = {
 		} else {
 			var nodeTemp = current = this._head;
 			do {
-				str += "Data: " + current.data;
+				str += "[" + current.data;
 				if (current.next !== null) {
 					var nxt = current.next;
-					str += ", Next: " + nxt.data + " | ";
-				} else str += ", Next: null";
+					str += "], ";
+				} else str += "]";
 				
 				current = current.next;
 				
@@ -229,5 +565,7 @@ LinkedList.prototype = {
 
 			return str;
 		}
-	}
-}
+	};
+	
+	window.LinkedList = LinkedList;
+})();
