@@ -3,7 +3,7 @@ JSLinkedList
 
 Implementation of LinkedList in JavaScript. Eventually will emulate JavaSE 7's LinkedList type.
 
-## Current version: 0.37.2
+## Current version: 0.38.1
 
 Version 1 will be considered ready when all of the items of the Method Summary are implemented.
 
@@ -25,11 +25,6 @@ Enhanced features are frozen at this time. But please make a feature request to 
 		<td>LinkedList()</td>
 		<td>Constructs an empty list</td>
 		<td>0.37.0</td>
-	</tr>
-	<tr>
-		<td>LinkedList(Collection)</td>
-		<td>Constructs a list contianing Elements of the specified collection in the order they are returned by the collection's itterator.</td>
-		<td></td>
 	</tr>
 </table>
 
@@ -58,7 +53,7 @@ Checked items indicate working functionality. Unchecked items are not implemente
 	</tr>
 	<tr>
 		<td>bool</td>
-		<td>allAll(Collection)</td>
+		<td>addAll(Collection)</td>
 		<td>Appends all of the elmeents in the specified collection to the end of the list, in the order that they are returned by the specified collection's itterator.</td>
 		<td></td>
 	</tr>
@@ -99,12 +94,6 @@ Checked items indicate working functionality. Unchecked items are not implemente
 		<td>0.37.0</td>
 	</tr>
 	<tr>
-		<td>Iterator</td>
-		<td>descendingIterator()</td>
-		<td>Returns an iterator over the Elements in the deque in reverse sequential order.</td>
-		<td></td>
-	</tr>
-	<tr>
 		<td>Element</td>
 		<td>Element()</td>
 		<td>Returns, but does not remove, the head (first Element) of this list.</td>
@@ -139,12 +128,6 @@ Checked items indicate working functionality. Unchecked items are not implemente
 		<td>lastIndexOf(Object)</td>
 		<td>Returns the index of the last occurance of the specified object in the list, or -1 if this list does not contain the object.</td>
 		<td>0.37.0</td>
-	</tr>
-	<tr>
-		<td>ListIterator</td>
-		<td>listIterator(index)</td>
-		<td>Returns a list-iterator of the Elements in the list (in proper sequence), starting at the specified position in the list.</td>
-		<td></td>
 	</tr>
 	<tr>
 		<td>bool</td>
@@ -306,5 +289,11 @@ Checked items indicate working functionality. Unchecked items are not implemente
 		<td>sort(Function)</td>
 		<td>Sorts the list based on the function passed in the same manner as JavaScript's Array.prototype.sort.</td>
 		<td>0.37.0</td>
+	</tr>
+	<tr>
+		<td>void</td>
+		<td>sortedAdd(Element,Function)</td>
+		<td>Adds an Element into the list in a sorted position based upon the function passed in the same manner as JavaScript's Array.prototype.sort.</td>
+		<td>0.38.0</td>
 	</tr>
 </table>
