@@ -2,7 +2,7 @@
  * LinkedList for JavaScript.
  * Eventually this will completely emulate a regular Java linked list.
  * Copyright 2013, Brian Milton
- * Version: 0.37.2 (18th July 2013)
+ * Version: 0.38.1 (22nd July 2013)
  */
 define("LinkedList", function() {
 	
@@ -11,7 +11,7 @@ define("LinkedList", function() {
 	function LinkedList() {
 		this._length = 0;
 		this._head = null;
-		this._last = null;
+		this._tail = null;
 	}
 	
 	/*
@@ -60,14 +60,14 @@ define("LinkedList", function() {
 			if (this._head === null) {
 				
 				this._head = node;
-				this._last = node;
+				this._tail = node;
 				
 			} else {
 				
 				// Add as the last item in the list.
-				current = this._last;
+				current = this._tail;
 				current.next = node;
-				this._last = node;
+				this._tail = node;
 				
 			}
 	
@@ -114,7 +114,7 @@ define("LinkedList", function() {
 	 */
 	LinkedList.prototype.clear = function() {
 		var head = this._head;
-		var tail = this._last;
+		var tail = this._tail;
 		current.data = null;
 		current.next = null;
 		tail.data = null;
@@ -193,7 +193,7 @@ define("LinkedList", function() {
 	 * @return {element}
 	 */
 	LinkedList.prototype.getLast = function() {
-		return this._last.data;
+		return this._tail.data;
 	};
 	
 	/*
@@ -293,7 +293,7 @@ define("LinkedList", function() {
 	 * @return {element}
 	 */
 	LinkedList.prototype.peekLast = function() {
-		return this._last.data;
+		return this._tail.data;
 	};
 	
 	/*
@@ -370,7 +370,7 @@ define("LinkedList", function() {
 				
 				// Special case: Remove last item
 				if (index == this._length - 1){
-					this._last = previous;
+					this._tail = previous;
 				}
 			}
 
@@ -425,7 +425,7 @@ define("LinkedList", function() {
 		}
 		// Last reached.
 		previous.next = null;
-		this._last = previous;
+		this._tail = previous;
 		this._length--;
 		MODCOUNT++;
 		return current.data;
@@ -516,13 +516,60 @@ define("LinkedList", function() {
 					current = current.next;
 				} while (current !== null);
 				// End of the list reached.
-				current = this._last;
+				current = this._tail;
 			}
 			//console.log("Done in "+numops+" operations");
 			MODCOUNT++;
 			return true;
 		}
 	};
+	
+	/*
+	 * Adds an element to the list while maintaining a sorted order.
+	 * @return {void} 
+	 */
+	LinkedList.prototype.sortedAdd = function(element,sortFunction) {
+		var node = {data:element,next:null};
+		if(this._length === 0){
+			this._head = node;
+			this._tail = node;
+			MODCOUNT++;
+			this._length++;
+			return;
+		}
+		var current = this._head;
+		var direction = direction || "asc";
+		var previous = null;
+		var i=0;
+		while(i++ < this._length) {
+			if (sortFunction(current.data,node.data)) {
+				
+				if(previous === null) {
+					// Special case: Insert at head.
+					node.next = this._head;
+					this._head = node;
+					MODCOUNT++;
+					this._length++;
+					return;
+				}
+				
+				node.next = current;
+				previous.next = node;
+				MODCOUNT++;
+				this._length++;
+				return;
+			}
+			previous = current;
+			current = current.next;
+		}
+		// Didn't match any. Insert at tail.
+		current = this._tail;
+		current.next = node;
+		this._tail = node;
+		MODCOUNT++;
+		this._length++;
+		return;
+	}
 	
 	/*
 	 * Returns an array containing all of the elements in the list in proper sequence (from head to tail).
