@@ -2,7 +2,7 @@
  * LinkedList for JavaScript.
  * Eventually this will completely emulate a regular Java linked list.
  * Copyright 2013, Brian Milton
- * Version: 0.38.2 (22nd July 2013)
+ * Version: 0.38.3 (22nd July 2013)
  */
 define("LinkedList", function() {
 	
@@ -116,13 +116,12 @@ define("LinkedList", function() {
 		if(this._length === 0) {
 			return;
 		}
-		var head = this._head;
-		var tail = this._tail;
-		head.data = null;
-		head.next = null;
-		tail.data = null;
+		var node = {data:null,next:null}
+		this._head = null;
+		this._tail = null;
 		this._length = 0;
 		MODCOUNT++;
+		return;
 	};
 	
 	/*
@@ -501,7 +500,8 @@ define("LinkedList", function() {
 					if(current.next !== null) {
 						var nextNode = current.next;
 						// If not, apply the function passed on this and the next node.
-						if(sortFunction(current.data,nextNode.data)) {
+						var sortResult = sortFunction(current.data,nextNode.data);
+						if(sortResult === true || sortResult > 0) {
 							// Result of the function is true...
 							// Sort isn't complete (nextNode is not null)
 							sortDone = false;
