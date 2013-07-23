@@ -3,7 +3,7 @@ JSLinkedList
 
 Implementation of LinkedList in JavaScript. Eventually will emulate JavaSE 7's LinkedList type.
 
-## Current version: 0.38.1
+## Current version: 0.38.2
 
 Version 1 will be considered ready when all of the items of the Method Summary are implemented.
 

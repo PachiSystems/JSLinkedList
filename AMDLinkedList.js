@@ -2,7 +2,7 @@
  * LinkedList for JavaScript.
  * Eventually this will completely emulate a regular Java linked list.
  * Copyright 2013, Brian Milton
- * Version: 0.38.1 (22nd July 2013)
+ * Version: 0.38.2 (22nd July 2013)
  */
 define("LinkedList", function() {
 	
@@ -113,10 +113,13 @@ define("LinkedList", function() {
 	 * @return {void}
 	 */
 	LinkedList.prototype.clear = function() {
+		if(this._length === 0) {
+			return;
+		}
 		var head = this._head;
 		var tail = this._tail;
-		current.data = null;
-		current.next = null;
+		head.data = null;
+		head.next = null;
 		tail.data = null;
 		this._length = 0;
 		MODCOUNT++;
