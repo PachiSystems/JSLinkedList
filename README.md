@@ -3,15 +3,13 @@ JSLinkedList
 
 Implementation of LinkedList in JavaScript. Eventually will emulate JavaSE 7's LinkedList type.
 
-## Current version: 0.38.2
+## Current version: 1.0.0
 
-Version 1 will be considered ready when all of the items of the Method Summary are implemented.
-
-Enhanced features are frozen at this time. But please make a feature request to be included in version 2 to enhance the LinkedList.
+Please make a feature request to be included in version 2 to enhance the LinkedList. Currently the module works as a Node module, RequireJS module and as a standalone module depending on how you want to use it.
 
 ## Field Summary
 
-- modCount - Number of times the list has been structurally modified. Used internally only at present until I can figure out a way to make it protected.
+- modCount - Number of times the list has been structurally modified.
 
 ## Constructor Summary
 
@@ -19,12 +17,17 @@ Enhanced features are frozen at this time. But please make a feature request to 
 	<tr>
 		<th>Constructor</th>
 		<th>Description</th>
-		<th>Version Included</th>
+		<th>Version Introduced</th>
 	<tr>
 	<tr>
 		<td>LinkedList()</td>
 		<td>Constructs an empty list</td>
 		<td>0.37.0</td>
+	</tr>
+	<tr>
+		<td>LinkedList(Collection)</td>
+		<td>Constructs a list using the colelction passed in the order they are in the collection.</td>
+		<td>1.0.0</td>
 	</tr>
 </table>
 
@@ -37,7 +40,7 @@ Checked items indicate working functionality. Unchecked items are not implemente
 		<th>Return</th>
 		<th>Method Name</th>
 		<th>Method Description</th>
-		<th>Version included</th>
+		<th>Version Introduced</th>
 	</tr>
 	<tr>
 		<td>bool</td>
@@ -55,13 +58,13 @@ Checked items indicate working functionality. Unchecked items are not implemente
 		<td>bool</td>
 		<td>addAll(Collection)</td>
 		<td>Appends all of the elmeents in the specified collection to the end of the list, in the order that they are returned by the specified collection's itterator.</td>
-		<td></td>
+		<td>1.0.0</td>
 	</tr>
 	<tr>
 		<td>bool</td>
 		<td>addAll(index, Collection)</td>
 		<td>Inserts all of the elments in the specified collection into the list, starting at the specified position.</td>
-		<td></td>
+		<td>1.0.0</td>
 	</tr>
 	<tr>
 		<td>bool</td>
@@ -206,12 +209,6 @@ Checked items indicate working functionality. Unchecked items are not implemente
 		<td>remove(index)</td>
 		<td>Retrieves and removes the Element at the specified index.</td>
 		<td>0.37.0</td>
-	</tr>
-	<tr>
-		<td>bool</td>
-		<td>remove(Object)</td>
-		<td>Removes the first occurance of the specified object from the list. If present, returns true.</td>
-		<td></td>
 	</tr>
 	<tr>
 		<td>Element</td>

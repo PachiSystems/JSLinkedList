@@ -2,16 +2,39 @@
  * LinkedList for JavaScript.
  * Eventually this will completely emulate a regular Java linked list.
  * Copyright 2013, Brian Milton
- * Version: 0.38.3 (22nd July 2013)
+ * Version: 1.0.0 (22nd July 2013)
  */
-(function() {
+(function( window , undefined ) {
 	
 	var MODCOUNT = 0;  // Number of times list has been strcurally modified.
 	
-	function LinkedList() {
+	/*
+	 * Constructor: If a collection is passed in the constructor, a LinkedList is created from it. Otherwise, list is empty.
+	 */
+	function LinkedList(collection) {
 		this._length = 0;
 		this._head = null;
 		this._tail = null;
+		if(collection) {
+			for(var x in collection) {
+				var node = {data:null,next:null};
+				if(this._head === null) {
+					// Start the list off.
+					node.data = collection[x];
+					this._head = node;
+					this._tail = node;
+					MODCOUNT++;
+					this._length++;
+				} else {
+					node.data = collection[x];
+					var current = this._tail;
+					current.next = node;
+					this._tail = node;
+					MODCOUNT++;
+					this._length++;
+				}
+			}
+		}
 	}
 	
 	/*
@@ -45,6 +68,7 @@
 				return false;
 			}
 			
+			this._length++;
 			MODCOUNT++;
 			
 			return true;
@@ -82,6 +106,38 @@
 		return false;
 		
 	};
+	
+	/*
+	 * Appends all of the elmeents in the specified collection to the end of the list, in the order that they are returned by the specified collection's itterator.
+	 * Inserts all of the elments in the specified collection into the list, starting at the specified position.
+	 * @return {bool}
+	 */
+	LinkedList.prototype.addAll = function(index,collection) {
+		if(collection) {
+			// Index and collection has been passed.
+			// Check for out of bounds:
+			if(index > -1 && index < this._length) {
+				for(var x in collection) {
+					this.add(index,collection[x]);
+					index++;
+				}
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			// Only a collection. Append to the end of the list.
+			for(var x in index) {
+				var current = this._tail;
+				var node = {data:index[x],next:null};
+				current.next = node;
+				this._tail = node;
+				this._length++;
+				MODCOUNT++;
+			}
+			return true;
+		}
+	},
 	
 	/*
 	 * Inserts the specified element at the beginning of the list.
@@ -617,5 +673,27 @@
 		}
 	};
 	
-	window.LinkedList = LinkedList;
-})();
+	if ( typeof module === "object" && module && typeof module.exports === "object") {
+		// Expose LinkedList as module.exports in loaders that implement the Node
+		// module pattern (including browserify). Do not create the global, since
+		// the user will be storing it themselves locally, and globals are frowned
+		// upon in the Node module world.
+		module.exports = LinkedList;
+	} else {
+		// Otherwise expose LinkedList to the global object as usual
+		window.LinkedList = LinkedList;
+
+		// Register as a named AMD module, since jQuery can be concatenated with other
+		// files that may use define, but not via a proper concatenation script that
+		// understands anonymous AMD modules. A named AMD is safest and most robust
+		// way to register. Lowercase jquery is used because AMD module names are
+		// derived from file names, and jQuery is normally delivered in a lowercase
+		// file name. Do this after creating the global so that if an AMD module wants
+		// to call noConflict to hide this version of jQuery, it will work.
+		if ( typeof define === "function" && define.amd) {
+			define("LinkedList", [], function() {
+				return LinkedList;
+			});
+		}
+	}
+})( window );
