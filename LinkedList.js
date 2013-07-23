@@ -597,11 +597,11 @@
 			return;
 		}
 		var current = this._head;
-		var direction = direction || "asc";
 		var previous = null;
 		var i=0;
 		while(i++ < this._length) {
-			if (sortFunction(current.data,node.data)) {
+			var sortResult = sortFunction(current.data,node.data); 
+			if (sortResult === true || sortResult > 0) {
 				
 				if(previous === null) {
 					// Special case: Insert at head.
